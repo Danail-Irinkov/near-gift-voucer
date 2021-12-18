@@ -21,9 +21,9 @@ async function initContract() {
   window.contract = await window.near.loadContract(nearConfig.contractName, {
     // NOTE: This configuration only needed while NEAR is still in development
     // View methods are read only. They don't modify the state, but usually return some value.
-    viewMethods: ['whoSaidHi'],
+    viewMethods: ['whoSaidHi', 'getVoucher'],
     // Change methods can modify the state. But you don't receive the returned value when called.
-    changeMethods: ['sayHi'],
+    changeMethods: ['sayHi', 'createVoucher'],
     // Sender is the account ID to initialize transactions.
     sender: window.accountId,
   });
@@ -67,7 +67,10 @@ function signedInFlow() {
   // Adding an event to a say-hi button.
   document.getElementById('say-hi').addEventListener('click', () => {
     // We call say Hi and then update who said Hi last.
-    window.contract.sayHi().then(updateWhoSaidHi);
+    // window.contract.sayHi().then(updateWhoSaidHi);
+	  window.email = 'asfsdfeduty'
+    window.contract.createVoucher({to_email: "asdde", amount: "100"}).then(CVCallback);
+    // window.contract.createVoucher({to_email: window.email, amount: "100"}).then(CVCallback);
   });
 
   // Adding an event to a sing-out button.
@@ -84,6 +87,11 @@ function signedInFlow() {
 }
 
 // Function to update who said hi
+async function CVCallback(res) {
+	console.log('updateWhoSaidHi res', res)
+	let voucher = await contract.getVoucher(window.email)
+	console.log('updateWhoSaidHi voucher', voucher)
+}
 function updateWhoSaidHi() {
   // JavaScript tip:
   // This is another example of how to use promises. Since this function is not async,
